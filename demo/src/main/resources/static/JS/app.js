@@ -1,29 +1,4 @@
 
-var Navbar = React.Component({
-    render: function(){
-        return( <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <a className="navbar-brand" href="index.html">AccountApp</a>
-                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-                <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-                    <div className="navbar-nav">
-                        <a className="nav-item nav-link active" href="#">DashBoard <span className="sr-only">(current)</span></a>
-                        <li className="nav-item dropdown">
-                            <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Accounts
-                            </a>
-                            <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a className="dropdown-item" href="#">Add Account</a>
-                                <a className="dropdown-item" href="#">Get Account</a>
-
-                            </div>
-                        </li>
-                    </div>
-                </div>
-            </nav>
-        ) }
-});
 
 
 const App = React.createClass({
@@ -50,49 +25,77 @@ const App = React.createClass({
     }
 });
 
+var Navbar = React.createClass({
 
-// class EmployeeList extends React.Component{
-//     render() {
-//         var employees = this.props.employees.map(employee =>
-//             <Employee key={employee._links.self.href} employee={employee} onDelete={this.props.onDelete}/>
-//         );
-//         return (
-//             <table>
-//                 <tbody>
-//                 <tr>
-//                     <th>First Name</th>
-//                     <th>Last Name</th>
-//                     <th>Description</th>
-//                 </tr>
-//                 {employees}
-//                 </tbody>
-//             </table>
-//         )
-//     }
-// }
+    GetAccounts() {
+        ReactDOM.render(<App />, document.getElementById('root'))
+    },
 
-var EmployeeTable = React.createClass({
-    render: function() {
-        const rows = [];
-        this.props.employees.forEach(function(employee) {
-            rows.push(<Employee employee={employee} />);
-        });
-        return (
-            <div className="container">
-                <table className="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>First Name</th>
-                        <th>Surname</th>
-                        <th>Account Number</th>
-                        <th>Delete</th>
-                    </tr>
-                    </thead>
-                    <tbody>{rows}</tbody>
-                </table>
-            </div>);
-    }
+    AddAccounts(){
+        ReactDOM.render(<NewUsers/>, document.getElementById('root'))
+    },
+
+    render: function(){
+        return( <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                <a className="navbar-brand" href="index.html">AccountApp</a>
+                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span className="navbar-toggler-icon"></span>
+                </button>
+                <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div className="navbar-nav">
+                        <a className="nav-item nav-link active" href="#">DashBoard <span className="sr-only">(current)</span></a>
+                        <li className="nav-item dropdown">
+                            <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Accounts
+                            </a>
+                            <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a className="dropdown-item" href="#" onClick={this.AddAccounts}>Add Account</a>
+                                <a className="dropdown-item" href="#" onClick={this.GetAccounts}>Get Account</a>
+
+                            </div>
+                        </li>
+                    </div>
+                </div>
+            </nav>
+        ) }
 });
+
+// var NewUsers = React.createClass({
+//
+//     propTypes: {
+//         value: React.PropTypes.object.isRequired
+//     },
+//
+//     render: function() {
+//         return (
+//             React.createElement('form', {className: 'ContactForm'},
+//                 React.createElement('input', {
+//                     type: 'text',
+//                     placeholder: 'Name (required)',
+//                     value: this.props.value.name,
+//                 }),
+//                 React.createElement('input', {
+//                     type: 'email',
+//                     placeholder: 'Email',
+//                     value: this.props.value.email,
+//                 }),
+//                 React.createElement('textarea', {
+//                     placeholder: 'Description',
+//                     value: this.props.value.description,
+//                 }),
+//                 React.createElement('button', {type: 'submit'}, "Add Contact")
+//             )
+//         )
+//     },
+// });
+
+//    var UsersForms = React.createClass({
+//
+//    });
+
+
+
+
 
 var Employee = React.createClass({
     getInitialState: function() {
@@ -126,17 +129,40 @@ var Employee = React.createClass({
     }
 });
 
+var EmployeeTable = React.createClass({
+    render: function() {
+        const rows = [];
+        this.props.employees.forEach(function(employee) {
+            rows.push(<Employee employee={employee} />);
+        });
+        return (
+            <div>
+                <Navbar/>
+                <div className="container">
+
+                    <table className="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>First Name</th>
+                            <th>Surname</th>
+                            <th>Account Number</th>
+                            <th>Delete</th>
+                        </tr>
+                        </thead>
+                        <tbody>{rows}</tbody>
+                    </table>
+                </div>
+            </div>);
+    }
+});
 
 
-
-
-// var EMPLOYEES = [
-//     {firstName: 'Joe', surname: 'Biden', accountNumber: 5},
-//     {firstName: 'President', surname: 'Biden', accountNumber: 8},
-//     {firstName: 'Crystal', surname: 'Biden', accountNumber: 12},
-//     {firstName: 'James', surname: 'Biden', accountNumber: 2}
-// ];
-
+var EMPLOYEES = [
+    {firstName: 'Joe', surname: 'Biden', accountNumber: 5},
+    {firstName: 'President', surname: 'Biden', accountNumber: 8},
+    {firstName: 'Crystal', surname: 'Biden', accountNumber: 12},
+    {firstName: 'James', surname: 'Biden', accountNumber: 2}
+];
 
 
 // class CreateDialog extends React.Component {
@@ -194,4 +220,4 @@ var Employee = React.createClass({
 
 
 
-ReactDOM.render( <App/>, document.getElementById('root') );
+ReactDOM.render( <Navbar/>, document.getElementById('root') );
