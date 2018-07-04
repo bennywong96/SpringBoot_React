@@ -31,7 +31,7 @@ public class DatabaseController {
         return eRepository.findAll();
     }
 
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    @DeleteMapping(path= "/delete/{id}")
     public List<Employee> delete(@PathVariable long id){
         eRepository.deleteById(id);
         return eRepository.findAll();

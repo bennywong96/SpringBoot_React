@@ -32,7 +32,7 @@ var Navbar = React.createClass({
     },
 
     addAccounts(){
-        ReactDOM.render(<NewUsers/>, document.getElementById('root'))
+        ReactDOM.render(<MyInput/>, document.getElementById('root'))
     },
 
     render: function(){
@@ -73,35 +73,75 @@ var NewUsers = React.createClass({
 
 var MyInput = React.createClass({
     getInitialState: function() {
-        return {
-            value:""
-        };
+        return {typed: ''};
+    },
+    firstNameChange: function(e) {
+        this.setState({ firstName: e.target.value})
+    },
+    surnameChange: function(e) {
+        this.setState({surname: e.target.value})
+    },
+    accountNumberChange: function(e) {
+        this.setState({accountNumber: e.target.value})
     },
 
-    handleChange: function(evt) {
-        this.setState({
-            value: evt.target.value
+    onSubmit: function(e){
+        e.preventDefault();
+
+        const data = {
+            "firstName": this.state.firstName,
+            "surname": this.state.surname,
+            "accountNumber": this.state.accountNumber
+        };
+        e.target.reset();
+        const jsonData = JSON.stringify(data);
+
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "api/employees/add",
+            "method": "POST",
+            "headers": {
+                "content-type": "application/json",
+                "cache-control": "no-cache",
+                "postman-token": "3e28dcb4-ba6a-45bd-1807-4c74b1780b6f"
+            },
+            "processData": false,
+            "data": jsonData
+        }
+
+        $.ajax(settings).done(function (response) {
+            console.log(response);
         });
     },
-
-    render: function() {
-
-        return (
-            <div>
-                <Navbar/>
-                <div className="container">
-                    <form >
-                        {/*onSubmit={this.submit.bind(this)}*/}
-                    <div className="userForm">
-                        <label htmlFor="inFirstName">First Name</label>
-                        <input type="text" className="form-control" id="inFirstName" placeholder="First Name" val = {this.state.firstName}/>
-                    </div>
-
-                    </form>
+    render: function(){
+        return(
+            <div className="container">
+                <Navbar />
+                <form onSubmit={this.onSubmit}>
+                <div className="form-group">
+                    <label htmlFor="inputFirstName">First Name:</label>
+                    <input type="text" className="form-control" id="inputFirstName" placeholder="First Name" onChange={this.firstNameChange}/>
                 </div>
-            </div>);
+                <div className="form-group">
+                    <label htmlFor="inputSurname">Last Name:</label>
+                    <input type="text" className="form-control" id="inputSurname" placeholder="Last Name" onChange={this.surnameChange}/>
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="inputAccountNumber"> Account Number:</label>
+                    <input type="text" className="form-control" id="inputAccountNumber" placeholder="Account Number" onChange={this.accountNumberChange}/>
+                </div>
+                <button type="submit" className="btn btn-primary">Add Account</button>
+                </form>
+            </div>
+        )
     }
 });
+
+
+
+
 
 //    var UsersForms = React.createClass({
 //
@@ -128,6 +168,9 @@ var Employee = React.createClass({
             }
         });
     },
+    // edit(){
+    //     <CreateDialog />
+    // },
     render: function() {
         if (this.state.display==false) return null;
         else return (
@@ -135,6 +178,9 @@ var Employee = React.createClass({
                 <td>{this.props.employee.firstName}</td>
                 <td>{this.props.employee.surname}</td>
                 <td>{this.props.employee.accountNumber}</td>
+                <td>
+                    <button className="btn btn-info" onClick={this.edit}>Edit</button>
+                </td>
                 <td>
                     <button className="btn btn-info" onClick={this.handleDelete}>Delete</button>
                 </td>
@@ -171,20 +217,56 @@ var EmployeeTable = React.createClass({
 });
 
 
-var EMPLOYEES = [
-    {firstName: 'Joe', surname: 'Biden', accountNumber: 5},
-    {firstName: 'President', surname: 'Biden', accountNumber: 8},
-    {firstName: 'Crystal', surname: 'Biden', accountNumber: 12},
-    {firstName: 'James', surname: 'Biden', accountNumber: 2}
-];
 
 
-// class CreateDialog extends React.Component {
+
+// var CreateDialog = React.createClass ({
 //
 //     constructor(props) {
+//         // noinspection JSAnnotator
 //         super(props);
 //         this.handleSubmit = this.handleSubmit.bind(this);
-//     }
+//     },
+//
+//     firstNameChange: function(e) {
+//         this.setState({ firstName: e.target.value})
+//     },
+//     surnameChange: function(e) {
+//         this.setState({surname: e.target.value})
+//     },
+//     accountNumberChange: function(e) {
+//         this.setState({accountNumber: e.target.value})
+//     },
+//
+//     onSubmit: function(e){
+//         e.preventDefault();
+//
+//         const data = {
+//             "firstName": this.state.firstName,
+//             "surname": this.state.surname,
+//             "accountNumber": this.state.accountNumber
+//         };
+//         e.target.reset();
+//         const jsonData = JSON.stringify(data);
+//
+//         var settings = {
+//             "async": true,
+//             "crossDomain": true,
+//             "url": "http://localhost:8080/api/employees/add",
+//             "method": "POST",
+//             "headers": {
+//                 "content-type": "application/json",
+//                 "cache-control": "no-cache",
+//                 "postman-token": "3e28dcb4-ba6a-45bd-1807-4c74b1780b6f"
+//             },
+//             "processData": false,
+//             "data": jsonData
+//         }
+//
+//         $.ajax(settings).done(function (response) {
+//             console.log(response);
+//         });
+//     },
 //
 //     handleSubmit(e) {
 //         e.preventDefault();
@@ -201,9 +283,9 @@ var EMPLOYEES = [
 //
 //         // Navigate away from the dialog to hide it.
 //         window.location = "#";
-//     }
+//     },
 //
-//     render() {
+//     render: function() {
 //         var inputs = this.props.attributes.map(attribute =>
 //             <p key={attribute}>
 //                 <input type="text" placeholder={attribute} ref={attribute} className="field" />
@@ -220,9 +302,21 @@ var EMPLOYEES = [
 //
 //                         <h2>Create new employee</h2>
 //
-//                         <form>
-//                             {inputs}
-//                             <button onClick={this.handleSubmit}>Create</button>
+//                         <form onSubmit={this.onSubmit}>
+//                             <div className="form-group">
+//                                 <label htmlFor="inputFirstName">First Name:</label>
+//                                 <input type="text" className="form-control" id="inputFirstName" placeholder="First Name" onChange={this.firstNameChange}></input>
+//                             </div>
+//                             <div className="form-group">
+//                                 <label htmlFor="inputSurname">Last Name:</label>
+//                                 <input type="text" className="form-control" id="inputSurname" placeholder="Last Name" onChange={this.surnameChange()}></input>
+//                             </div>
+//
+//                             <div className="form-group">
+//                                 <label htmlFor="inputAccountNumber"> Account Number:</label>
+//                                 <input type="text" className="form-control" id="inputAccountNumber" placeholder="Account Number" onChange={this.accountNumberChange()}></input>
+//                             </div>
+//                             <button type="submit" className="btn btn-primary">Add Account</button>
 //                         </form>
 //                     </div>
 //                 </div>
@@ -230,8 +324,8 @@ var EMPLOYEES = [
 //         )
 //     }
 //
-// }
+// });
 
 
 
-ReactDOM.render( <MyInput />, document.getElementById('root') );
+ReactDOM.render( <NewUsers />, document.getElementById('root') );
