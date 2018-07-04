@@ -27,17 +27,17 @@ const App = React.createClass({
 
 var Navbar = React.createClass({
 
-    GetAccounts() {
+    getAccounts() {
         ReactDOM.render(<App />, document.getElementById('root'))
     },
 
-    AddAccounts(){
+    addAccounts(){
         ReactDOM.render(<NewUsers/>, document.getElementById('root'))
     },
 
     render: function(){
         return( <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <a className="navbar-brand" href="index.html">AccountApp</a>
+                <a className="navbar-brand" href="#">AccountApp</a>
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
@@ -49,8 +49,8 @@ var Navbar = React.createClass({
                                 Accounts
                             </a>
                             <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a className="dropdown-item" href="#" onClick={this.AddAccounts}>Add Account</a>
-                                <a className="dropdown-item" href="#" onClick={this.GetAccounts}>Get Account</a>
+                                <a className="dropdown-item" href="#" onClick={this.addAccounts}>Add Account</a>
+                                <a className="dropdown-item" href="#" onClick={this.getAccounts}>Get Account</a>
 
                             </div>
                         </li>
@@ -60,34 +60,48 @@ var Navbar = React.createClass({
         ) }
 });
 
-// var NewUsers = React.createClass({
-//
-//     propTypes: {
-//         value: React.PropTypes.object.isRequired
-//     },
-//
-//     render: function() {
-//         return (
-//             React.createElement('form', {className: 'ContactForm'},
-//                 React.createElement('input', {
-//                     type: 'text',
-//                     placeholder: 'Name (required)',
-//                     value: this.props.value.name,
-//                 }),
-//                 React.createElement('input', {
-//                     type: 'email',
-//                     placeholder: 'Email',
-//                     value: this.props.value.email,
-//                 }),
-//                 React.createElement('textarea', {
-//                     placeholder: 'Description',
-//                     value: this.props.value.description,
-//                 }),
-//                 React.createElement('button', {type: 'submit'}, "Add Contact")
-//             )
-//         )
-//     },
-// });
+var NewUsers = React.createClass({
+
+    render: function() {
+        return (
+            <div>
+            <Navbar />
+            </div>
+        )
+    },
+});
+
+var MyInput = React.createClass({
+    getInitialState: function() {
+        return {
+            value:""
+        };
+    },
+
+    handleChange: function(evt) {
+        this.setState({
+            value: evt.target.value
+        });
+    },
+
+    render: function() {
+
+        return (
+            <div>
+                <Navbar/>
+                <div className="container">
+                    <form >
+                        {/*onSubmit={this.submit.bind(this)}*/}
+                    <div className="userForm">
+                        <label htmlFor="inFirstName">First Name</label>
+                        <input type="text" className="form-control" id="inFirstName" placeholder="First Name" val = {this.state.firstName}/>
+                    </div>
+
+                    </form>
+                </div>
+            </div>);
+    }
+});
 
 //    var UsersForms = React.createClass({
 //
@@ -220,4 +234,4 @@ var EMPLOYEES = [
 
 
 
-ReactDOM.render( <Navbar/>, document.getElementById('root') );
+ReactDOM.render( <MyInput />, document.getElementById('root') );

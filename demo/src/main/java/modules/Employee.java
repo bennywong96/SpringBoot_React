@@ -5,16 +5,24 @@ import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Data
 @Entity
 public class Employee {
 
-    private @Id
-    @GeneratedValue
-    Long id;
+    @Id
+    @GeneratedValue (strategy= GenerationType.SEQUENCE)
+    private long id;
+
     private String firstName;
+    private String surname;
+    private String accountNumber;
+
+    public long getId(){
+        return id;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -32,20 +40,19 @@ public class Employee {
         this.surname = surname;
     }
 
-    public int getAccountNumber() {
+    public String getAccountNumber() {
         return accountNumber;
     }
 
-    public void setAccountNumber(int accountNumber) {
+    public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
     }
 
-    private String surname;
-    private int accountNumber;
+
 
     private Employee() {}
 
-    public Employee(String firstName, String surname, int accountNumber) {
+    public Employee(String firstName, String surname, String accountNumber) {
         this.firstName = firstName;
         this.surname = surname;
         this.accountNumber = accountNumber;
