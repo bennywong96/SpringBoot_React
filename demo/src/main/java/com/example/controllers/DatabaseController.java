@@ -1,5 +1,7 @@
-package modules;
+package com.example.controllers;
 
+import com.example.entity.Employee;
+import com.example.repo.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

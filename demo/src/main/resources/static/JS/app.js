@@ -1,7 +1,7 @@
 
 
 
-const App = React.createClass({
+var App = React.createClass({
 
     loadEmployeesFromServer: function () {
         var self = this;
@@ -185,7 +185,7 @@ var Employee = React.createClass({
             type: 'DELETE',
             success: function(result) {
                 self.setState({delete: true});
-                toastr.success("Deleted");
+                toastr.error("Deleted");
             },
 
             error: function(xhr, ajaxOptions, thrownError) {
