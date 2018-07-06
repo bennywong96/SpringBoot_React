@@ -116,6 +116,7 @@ var MyInput = React.createClass({
 
         $.ajax(settings).done(function (response) {
             console.log(response);
+            toastr.success("User Added!");
         });
     },
     render: function(){
@@ -175,7 +176,7 @@ var Dash = React.createClass({
 
 var Employee = React.createClass({
     getInitialState: function() {
-        return {display: true };
+        return {display: true, editing: false };
     },
     handleDelete() {
         var self = this;
@@ -183,34 +184,94 @@ var Employee = React.createClass({
             url: self.props.employee._links.self.href,
             type: 'DELETE',
             success: function(result) {
-                self.setState({display: false});
+                self.setState({delete: true});
+                toastr.success("Deleted");
             },
+
             error: function(xhr, ajaxOptions, thrownError) {
-                toastr.error(xhr.responseJSON.message);
+                toastr.error("Error!!");
             }
         });
     },
     edit(){
-        console.log("Nawid sucks");
+        //ReactDOM.render(<CreateDialog/>, document.getElementById('root'))
+        this.setState({
+            editing: true
+        });
 
-        ReactDOM.render(<CreateDialog/>, document.getElementById('root'))
     },
+
+    save: function(){
+        this.setState({
+            editing: false
+        });
+        if(this.refs.newFirstName.value == false
+            || this.refs.newSurname.value == false
+            || this.refs.newAccountNumber.value == false){
+            alert(jsonData.alert)
+        }else {
+            this.props.employee.firstName = this.refs.newFirstName.value;
+            this.props.employee.surname = this.refs.newSurname.value;
+            this.props.employee.accountNumber = this.refs.newAccountNumber.value;
+
+            var self = this;
+            $.ajax({
+                url: self.props.employee._links.self.href,
+                type: 'PUT',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(this.props.employee),
+                success: function (result) {
+
+                    //self.setState({display: false});
+                    toastr.success("Updated User!");
+
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    toastr.error(xhr.responseJSON.message);
+                }
+            });
+        }
+    },
+
+
     render: function() {
-        if (this.state.display==false) return null;
+        if (this.state.delete) return null;
+        else if(this.state.editing){
+            return (
+                <tr>
+                    <td><input ref="newFirstName" defaultValue={this.props.employee.firstName}/></td>
+                    <td> <input ref="newSurname" defaultValue={this.props.employee.surname}/></td>
+                    <td> <input ref="newAccountNumber" defaultValue={this.props.employee.accountNumber}/></td>
+                    <td>
+                        <button className="btn btn-info" onClick={this.edit}>Edit</button>
+                    </td>
+                    <td>
+                        <button className="btn btn-danger" onClick={this.handleDelete}>Delete</button>
+                    </td>
+
+                    <td>
+                        <button className="btn btn-success" onClick={this.save}>Save</button>
+                    </td>
+                </tr>
+            )
+        }
         else return (
-            <tr>
-                <td>{this.props.employee.firstName}</td>
-                <td>{this.props.employee.surname}</td>
-                <td>{this.props.employee.accountNumber}</td>
-                <td>
-                    <button className="btn btn-info" onClick={this.edit}>Edit</button>
-                </td>
-                <td>
-                    <button className="btn btn-info" onClick={this.handleDelete}>Delete</button>
-                </td>
-            </tr>
-        );
-    }
+
+                <tr>
+
+                    <td>{this.props.employee.firstName}</td>
+                    <td>{this.props.employee.surname}</td>
+                    <td>{this.props.employee.accountNumber}</td>
+                    <td>
+                        <button className="btn btn-info" onClick={this.edit}>Edit</button>
+                    </td>
+                    <td>
+                        <button className="btn btn-danger" onClick={this.handleDelete}>Delete</button>
+                    </td>
+
+                </tr>);
+    },
+
 });
 
 var EmployeeTable = React.createClass({
@@ -244,116 +305,96 @@ var EmployeeTable = React.createClass({
 
 
 
-
-var CreateDialog = React.createClass ({
-
-    // constructor(props) {
-    //     // noinspection JSAnnotator
-    //     super(props);
-    //     this.handleSubmit = this.handleSubmit.bind(this);
-    // },
-    getInitialState: function() {
-        return {typed: ''};
-    },
-    firstNameEdit: function(e) {
-        this.setState({ firstName: e.target.value})
-    },
-    surnameEdit: function(e) {
-        this.setState({surname: e.target.value})
-    },
-    accountNumberEdit: function(e) {
-        this.setState({accountNumber: e.target.value})
-    },
-
-    onSubmit: function(e){
-        e.preventDefault();
-
-        const data = {
-            //"id": this.state.id,
-            "firstName": this.state.firstName,
-            "surname": this.state.surname,
-            "accountNumber": this.state.accountNumber
-        };
-        e.target.reset();
-        const jsonData = JSON.stringify(data);
-
-        var settings = {
-            "async": true,
-            "crossDomain": true,
-            "url": "http://localhost:8080/api/employees/edit/"+ this.props.employee.id,
-            "method": "PUT",
-            "headers": {
-                "content-type": "application/json",
-                "cache-control": "no-cache",
-                "postman-token": "7e3a162c-b6b8-fefe-1056-7f7241d4e856"
-            },
-            "processData": false,
-            "data": jsonData
-        }
-
-        $.ajax(settings).done(function (response) {
-            console.log(response);
-        });
-        window.location = "#";
-        console.log(this.props.employee.id);
-
-        ReactDOM.render(<App />, document.getElementById('root'))
-    },
-    //
-    // handleSubmit(e) {
-    //     e.preventDefault();
-    //     var newEmployee = {};
-    //     this.props.attributes.forEach(attribute => {
-    //         newEmployee[attribute] = ReactDOM.findDOMNode(this.refs[attribute]).value.trim();
-    //     });
-    //     this.props.onCreate(newEmployee);
-    //
-    //     // clear out the dialog's inputs
-    //     this.props.attributes.forEach(attribute => {
-    //         ReactDOM.findDOMNode(this.refs[attribute]).value = '';
-    //     });
-    //
-    //     // Navigate away from the dialog to hide it.
-    //
-    // },
-
-    render: function() {
-        // var inputs = this.props.attributes.map(attribute =>
-        //     <p key={attribute}>
-        //         <input type="text" placeholder={attribute} ref={attribute} className="field" />
-        //     </p>
-        // );
-
-        return (
-            <div>
-                <div id="editEmployee" className="modalDialog">
-                    <div>
-                        <a href="#" title="Close" className="close">X</a>
-                        <h2>Edit Employee</h2>
-
-                        <form onSubmit={this.onSubmit}>
-                            <div className="form-group">
-                                <label htmlFor="firstNameEdit">First Name:</label>
-                                <input type="text" className="form-control" id="firstNameEdit" placeholder="First Name" onChange={this.firstNameEdit}/>
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="surnameEdit">Last Name:</label>
-                                <input type="text" className="form-control" id="surnameEdit" placeholder="Last Name" onChange={this.surnameEdit}/>
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="accountNumberEdit"> Account Number:</label>
-                                <input type="text" className="form-control" id="accountNumberEdit" placeholder="Account Number" onChange={this.accountNumberEdit}/>
-                            </div>
-                            <button type="submit" className="btn btn-primary">Save</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-
-});
+//
+// var CreateDialog = React.createClass ({
+//
+//     // constructor(props) {
+//     //     // noinspection JSAnnotator
+//     //     super(props);
+//     //     this.handleSubmit = this.handleSubmit.bind(this);
+//     // },
+//     getInitialState: function() {
+//         return {typed: ''};
+//     },
+//     idEdit: function(e) {
+//         this.setState({id: e.target.value})
+//     },
+//     firstNameEdit: function(e) {
+//         this.setState({ firstName: e.target.value})
+//     },
+//     surnameEdit: function(e) {
+//         this.setState({surname: e.target.value})
+//     },
+//     accountNumberEdit: function(e) {
+//         this.setState({accountNumber: e.target.value})
+//     },
+//
+//     onSubmit: function(e){
+//         e.preventDefault();
+//
+//         const data = {
+//             "firstName": this.state.firstName,
+//             "surname": this.state.surname,
+//             "accountNumber": this.state.accountNumber
+//
+//         };
+//         e.target.reset();
+//         const jsonData = JSON.stringify(data);
+//
+//         var settings = {
+//             "async": true,
+//             "crossDomain": true,
+//             "url": "/api/employees/edit/"+this.props.employee.id,
+//             "method": "PUT",
+//             "headers": {
+//                 "content-type": "application/json",
+//                 "cache-control": "no-cache",
+//                 "postman-token": "7e3a162c-b6b8-fefe-1056-7f7241d4e856"
+//             },
+//             "processData": false,
+//             "data": jsonData
+//         }
+//
+//         $.ajax(settings).done(function (response) {
+//             console.log(response);
+//             toastr.success("User Edited");
+//         });
+//         window.location = "#";
+//
+//
+//         ReactDOM.render(<App />, document.getElementById('root'))
+//     },
+//
+//
+//     render: function() {
+//         return (
+//             <div>
+//             <Navbar/>
+//                     <div className="container">
+//                         <h2>Edit Employee</h2>
+//
+//                         <form onSubmit={this.onSubmit}>
+//                             <div className="form-group">
+//                                 <label htmlFor="firstNameEdit">First Name:</label>
+//                                 <input type="text" className="form-control" id="firstNameEdit" placeholder="First Name" onChange={this.firstNameEdit}/>
+//                             </div>
+//                             <div className="form-group">
+//                                 <label htmlFor="surnameEdit">Last Name:</label>
+//                                 <input type="text" className="form-control" id="surnameEdit" placeholder="Last Name" onChange={this.surnameEdit}/>
+//                             </div>
+//
+//                             <div className="form-group">
+//                                 <label htmlFor="accountNumberEdit"> Account Number:</label>
+//                                 <input type="text" className="form-control" id="accountNumberEdit" placeholder="Account Number" onChange={this.accountNumberEdit}/>
+//                             </div>
+//                             <button type="submit" className="btn btn-primary">Save</button>
+//                         </form>
+//                     </div>
+//             </div>
+//         )
+//     }
+//
+// });
 
 
 

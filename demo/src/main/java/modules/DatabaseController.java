@@ -28,8 +28,8 @@ public class DatabaseController {
         return eRepository.findAll();
     }
 
-    @RequestMapping(value = "/edit/{id}", method = RequestMethod.PUT)
-    public List<Employee> edit(@PathVariable long id, @RequestBody Employee employee){
+    @RequestMapping(value = "/edit}", method = RequestMethod.PUT)
+    public List<Employee> edit(@RequestBody Employee employee){
         eRepository.save(employee);
         return eRepository.findAll();
     }
